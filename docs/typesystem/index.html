@@ -1,0 +1,136 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Type System | GraphQL</title><meta name="viewport" content="width=device-width"><meta property="og:title" content="GraphQL | A data query language and runtime"><meta property="og:type" content="website"><meta property="og:url" content="http://graphql.org/"><meta property="og:description" content="A data query language and runtime"><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"><link rel="shortcut icon" href="/img/favicon.png"><link rel="stylesheet" href="/css/graphql.css"><script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script><script type="text/javascript">try{Typekit.load();}catch(e){}</script></head><body><div class="container"><div class="nav-main"><div class="wrap"><a class="nav-home" href="/"><img class="nav-logo" src="/img/logo.svg" width="40" height="40">GraphQL</a><div class="nav-site-wrapper"><ul class="nav-site nav-site-internal"><li><a href="/docs/getting-started/" class="active">Docs</a></li><li><a href="/blog/" class="">Blog</a></li><li><a href="/help/" class="">Help</a></li><li><a href="/code/" class="">Code</a></li></ul><div class="algolia-search-wrapper"><input id="algolia-doc-search" type="text" placeholder="Search docs..."></div><ul class="nav-site nav-site-external"><li><a href="http://facebook.github.io/graphql/" target="_blank" class="">Spec</a></li></ul></div></div></div><section class="content wrap documentationContent"><div class="nav-docs"><div class="nav-docs-section"><h3>Quick Start</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/getting-started/">Getting Started</a></li><li><a style="margin-left:0;" class="active" href="/docs/videos/">Videos</a></li></ul></div><div class="nav-docs-section"><h3>Walkthrough</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/intro/">Introduction</a></li><li><a style="margin-left:0;" class="active" href="/docs/typesystem/">Type System</a></li><li><a style="margin-left:0;" class="active" href="/docs/queries/">Queries</a></li><li><a style="margin-left:0;" class="active" href="/docs/validation/">Validation</a></li><li><a style="margin-left:0;" class="active" href="/docs/introspection/">Introspection</a></li></ul></div><div class="nav-docs-section"><h3>API Reference</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/api-reference-graphql/">GraphQL</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-language/">Language</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-type-system/">Type System</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-validation/">Validation</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-execution/">Execution</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-errors/">Errors</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-utilities/">Utilties</a></li></ul></div></div><div class="inner-content"><h1>Type System</h1><div><p>At the heart of any GraphQL implementation is a description of what types
+of objects it can return, described in a GraphQL type system and returned
+in the GraphQL Schema.</p><p>For our Star Wars example, the
+<a href="https://github.com/graphql/graphql-js/blob/master/src/__tests__/starWarsSchema.js" target="_blank">starWarsSchema.js</a>
+file in GraphQL.js defines this type system.</p><p>The most basic type in the system will be <code>Human</code>, representing characters
+like Luke, Leia, and Han. All humans in our type system will have a name,
+so we define the <code>Human</code> type to have a field called &quot;name&quot;. This returns
+a String, and we know that it is not null (since all <code>Human</code>s have a name),
+so we will define the &quot;name&quot; field to be a non-nullable String. Using a
+shorthand notation that we will use throughout the spec and documentation,
+we would describe the human type as:</p><pre class="prism language-javascript">
+type Human <span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> String
+<span class="token punctuation">}</span></pre><p>This shorthand is convenient for describing the basic shape of a type
+system; the JavaScript implementation is more full-featured, and allows types
+and fields to be documented. It also sets up the mapping between the
+type system and the underlying data; for a test case in GraphQL.js, the
+underlying data is a <a href="https://github.com/graphql/graphql-js/blob/master/src/__tests__/starWarsData.js" target="_blank">set of JavaScript objects</a>,
+but in most cases the backing data will be accessed through some service, and
+this type system layer will be responsible for mapping from types and fields to
+that service.</p><p>A common pattern in many APIs, and indeed in GraphQL is to give
+objects an ID that can be used to refetch the object. So let&#x27;s add
+that to our Human type. We&#x27;ll also add a string for their home
+planet.</p><pre class="prism language-javascript">
+type Human <span class="token punctuation">{</span>
+  id<span class="token punctuation">:</span> String
+  name<span class="token punctuation">:</span> String
+  homePlanet<span class="token punctuation">:</span> String
+<span class="token punctuation">}</span></pre><p>Since we&#x27;re talking about the Star Wars trilogy, it would be useful
+to describe what episodes each character appears in. To do so, we&#x27;ll
+first define an enum, which lists the three episodes in the trilogy:</p><pre class="prism language-javascript">
+<span class="token keyword">enum</span> Episode <span class="token punctuation">{</span> NEWHOPE<span class="token punctuation">,</span> EMPIRE<span class="token punctuation">,</span> JEDI <span class="token punctuation">}</span></pre><p>Now we want to add a field to <code>Human</code> describing what episodes they
+were in. This will return a list of <code>Episode</code>s:</p><pre class="prism language-javascript">
+type Human <span class="token punctuation">{</span>
+  id<span class="token punctuation">:</span> String
+  name<span class="token punctuation">:</span> String
+  appearsIn<span class="token punctuation">:</span> <span class="token punctuation">[</span>Episode<span class="token punctuation">]</span>
+  homePlanet<span class="token punctuation">:</span> String
+<span class="token punctuation">}</span></pre><p>Now, let&#x27;s introduce another type, <code>Droid</code>:</p><pre class="prism language-javascript">
+type Droid <span class="token punctuation">{</span>
+  id<span class="token punctuation">:</span> String
+  name<span class="token punctuation">:</span> String
+  appearsIn<span class="token punctuation">:</span> <span class="token punctuation">[</span>Episode<span class="token punctuation">]</span>
+  primaryFunction<span class="token punctuation">:</span> String
+<span class="token punctuation">}</span></pre><p>Now we have two types! Let&#x27;s add a way of going between them: humans
+and droids both have friends. But humans can be friends with both
+humans and droids. How do we refer to either a human or a droid?</p><p>If we look, we note that there&#x27;s common functionality between
+humans and droids; they both have IDs, names, and episodes
+they appear in. So we&#x27;ll add an interface, <code>Character</code>, and make
+both <code>Human</code> and <code>Droid</code> implement it. Once we have that, we can
+add the <code>friends</code> field, that returns a list of <code>Character</code>s.</p><p>Our type system so far is:</p><pre class="prism language-javascript">
+<span class="token keyword">enum</span> Episode <span class="token punctuation">{</span> NEWHOPE<span class="token punctuation">,</span> EMPIRE<span class="token punctuation">,</span> JEDI <span class="token punctuation">}</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">Character</span> <span class="token punctuation">{</span>
+  id<span class="token punctuation">:</span> String
+  name<span class="token punctuation">:</span> String
+  friends<span class="token punctuation">:</span> <span class="token punctuation">[</span>Character<span class="token punctuation">]</span>
+  appearsIn<span class="token punctuation">:</span> <span class="token punctuation">[</span>Episode<span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+
+type Human <span class="token punctuation">:</span> Character <span class="token punctuation">{</span>
+  id<span class="token punctuation">:</span> String
+  name<span class="token punctuation">:</span> String
+  friends<span class="token punctuation">:</span> <span class="token punctuation">[</span>Character<span class="token punctuation">]</span>
+  appearsIn<span class="token punctuation">:</span> <span class="token punctuation">[</span>Episode<span class="token punctuation">]</span>
+  homePlanet<span class="token punctuation">:</span> String
+<span class="token punctuation">}</span>
+
+type Droid <span class="token punctuation">:</span> Character <span class="token punctuation">{</span>
+  id<span class="token punctuation">:</span> String
+  name<span class="token punctuation">:</span> String
+  friends<span class="token punctuation">:</span> <span class="token punctuation">[</span>Character<span class="token punctuation">]</span>
+  appearsIn<span class="token punctuation">:</span> <span class="token punctuation">[</span>Episode<span class="token punctuation">]</span>
+  primaryFunction<span class="token punctuation">:</span> String
+<span class="token punctuation">}</span></pre><p>One question we might ask, though, is whether any of those fields can return
+<code>null</code>. By default, <code>null</code> is a permitted value for any type in GraphQL,
+since fetching data to fulfill a GraphQL query often requires talking
+to different services that may or may not be available. However, if the
+type system can guarantee that a type is never null, then we can mark
+it as Non Null in the type system. We indicate that in our shorthand
+by adding an &quot;!&quot; after the type. We can update our type system to note
+that the <code>id</code> is never null.</p><p>Note that while in our current implementation, we can guarantee that more
+fields are non-null (since our current implementation has hard-coded data),
+we didn&#x27;t mark them as non-null. One can imagine we would eventually
+replace our hardcoded data with a backend service, which might not be
+perfectly reliable; by leaving these fields as nullable, we allow
+ourselves the flexibility to eventually return null to indicate a backend
+error, while also telling the client that the error occurred.</p><pre class="prism language-javascript">
+<span class="token keyword">enum</span> Episode <span class="token punctuation">{</span> NEWHOPE<span class="token punctuation">,</span> EMPIRE<span class="token punctuation">,</span> JEDI <span class="token punctuation">}</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">Character</span> <span class="token punctuation">{</span>
+  id<span class="token punctuation">:</span> String<span class="token operator">!</span>
+  name<span class="token punctuation">:</span> String
+  friends<span class="token punctuation">:</span> <span class="token punctuation">[</span>Character<span class="token punctuation">]</span>
+  appearsIn<span class="token punctuation">:</span> <span class="token punctuation">[</span>Episode<span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+
+type Human <span class="token punctuation">:</span> Character <span class="token punctuation">{</span>
+  id<span class="token punctuation">:</span> String<span class="token operator">!</span>
+  name<span class="token punctuation">:</span> String
+  friends<span class="token punctuation">:</span> <span class="token punctuation">[</span>Character<span class="token punctuation">]</span>
+  appearsIn<span class="token punctuation">:</span> <span class="token punctuation">[</span>Episode<span class="token punctuation">]</span>
+  homePlanet<span class="token punctuation">:</span> String
+<span class="token punctuation">}</span>
+
+type Droid <span class="token punctuation">:</span> Character <span class="token punctuation">{</span>
+  id<span class="token punctuation">:</span> String<span class="token operator">!</span>
+  name<span class="token punctuation">:</span> String
+  friends<span class="token punctuation">:</span> <span class="token punctuation">[</span>Character<span class="token punctuation">]</span>
+  appearsIn<span class="token punctuation">:</span> <span class="token punctuation">[</span>Episode<span class="token punctuation">]</span>
+  primaryFunction<span class="token punctuation">:</span> String
+<span class="token punctuation">}</span></pre><p>We&#x27;re missing one last piece: an entry point into the type system.</p><p>When we define a schema, we define an object type that is the basis for all
+queries. The name of this type is <code>Query</code> by convention, and it describes
+our public, top-level API. Our <code>Query</code> type for this example will look like
+this:</p><pre class="prism language-javascript">
+type Query <span class="token punctuation">{</span>
+  <span class="token function">hero</span><span class="token punctuation">(</span>episode<span class="token punctuation">:</span> Episode<span class="token punctuation">)</span><span class="token punctuation">:</span> Character
+  <span class="token function">human</span><span class="token punctuation">(</span>id<span class="token punctuation">:</span> String<span class="token operator">!</span><span class="token punctuation">)</span><span class="token punctuation">:</span> Human
+  <span class="token function">droid</span><span class="token punctuation">(</span>id<span class="token punctuation">:</span> String<span class="token operator">!</span><span class="token punctuation">)</span><span class="token punctuation">:</span> Droid
+<span class="token punctuation">}</span></pre><p>In this example, there are three top-level operations
+that can be done on our schema:</p><ul><li><code>hero</code> returns the <code>Character</code> who is the hero of the Star Wars trilogy; it
+takes an optional argument that allows us to fetch the hero of a specific
+episode instead.</li><li><code>human</code> accepts a non-null string as a query argument, a human&#x27;s ID, and
+returns the human with that ID.</li><li><code>droid</code> does the same for droids.</li></ul><p>These fields demonstrate another feature of the type system, the ability
+for a field to specify arguments that configure their behavior.</p><p>When we package the whole type system together, defining the <code>Query</code> type
+above as our entry point for queries, this creates a GraphQL Schema.</p><p>This example just scratched the surface of the type system. The specification
+goes into more detail about this topic in the &quot;Type System&quot; section, and the <a href="https://github.com/graphql/graphql-js/blob/master/src/type" target="_blank">type</a>
+directory in GraphQL.js contains code implementing
+a specification-compliant GraphQL type system.</p></div><div class="docs-prevnext"><a class="docs-next" href="/docs/queries">Next →</a></div></div></section><footer class="wrap"><div class="right">©2015 Facebook Inc.</div></footer></div><div id="fb-root"></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+            docsearch({
+              apiKey: 'd103541f3e6041148aade2e746ed4d61',
+              indexName: 'graphql',
+              inputSelector: '#algolia-doc-search'
+            });
+          </script></body></html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Type System | GraphQL</title><meta name="viewport" content="width=device-width"><meta property="og:title" content="GraphQL | A data query language and runtime"><meta property="og:type" content="website"><meta property="og:url" content="http://graphql.org/"><meta property="og:description" content="A data query language and runtime"><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"><link rel="shortcut icon" href="/img/favicon.png"><link rel="stylesheet" href="/css/graphql.css"><script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script><script type="text/javascript">try{Typekit.load();}catch(e){}</script></head><body><div class="container"><div class="nav-main"><div class="wrap"><a class="nav-home" href="/"><img class="nav-logo" src="/img/logo.svg" width="40" height="40">GraphQL</a><div class="nav-site-wrapper"><ul class="nav-site nav-site-internal"><li><a href="/docs/getting-started/" class="active">Docs</a></li><li><a href="/blog/" class="">Blog</a></li><li><a href="/help/" class="">Help</a></li><li><a href="/code/" class="">Code</a></li></ul><div class="algolia-search-wrapper"><input id="algolia-doc-search" type="text" placeholder="Search docs..."></div><ul class="nav-site nav-site-external"><li><a href="http://facebook.github.io/graphql/" target="_blank" class="">Spec</a></li></ul></div></div></div><section class="content wrap documentationContent"><div class="nav-docs"><div class="nav-docs-section"><h3>Quick Start</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/getting-started/">Getting Started</a></li><li><a style="margin-left:0;" class="active" href="/docs/videos/">Videos</a></li></ul></div><div class="nav-docs-section"><h3>Walkthrough</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/intro/">Introduction</a></li><li><a style="margin-left:0;" class="active" href="/docs/typesystem/">Type System</a></li><li><a style="margin-left:0;" class="active" href="/docs/queries/">Queries</a></li><li><a style="margin-left:0;" class="active" href="/docs/validation/">Validation</a></li><li><a style="margin-left:0;" class="active" href="/docs/introspection/">Introspection</a></li></ul></div><div class="nav-docs-section"><h3>API Reference</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/api-reference-graphql/">GraphQL</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-language/">Language</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-type-system/">Type System</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-validation/">Validation</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-execution/">Execution</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-errors/">Errors</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-utilities/">Utilties</a></li></ul></div></div><div class="inner-content"><h1>Type System</h1><div><p>The <code>graphql/type</code> module is responsible for defining GraphQL types and schema.</p><pre class="prism language-javascript">
+<span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&#x27;graphql/type&#x27;</span><span class="token punctuation">;</span> <span spellcheck="true" class="token comment">// ES6</span>
+<span class="token keyword">var</span> GraphQLType <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;graphql/type&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span spellcheck="true" class="token comment">// CommonJS</span></pre><h2><a class="anchor" name="overview"></a>Overview <a class="hash-link" href="#overview">#</a></h2><p><em>Schema</em></p><div><ul class="apiIndex">
+  <li>
+    <a href="#graphqlschema">
+      <pre>class GraphQLSchema</pre>
+      A representation of the capabilities of a GraphQL Server.
+    </a>
+  </li>
+</ul>
+
+</div><p><em>Definitions</em></p><div><ul class="apiIndex">
+  <li>
+    <a href="#graphqlscalartype">
+      <pre>class GraphQLScalarType</pre>
+      A scalar type within GraphQL.
+    </a>
+  </li>
+  <li>
+    <a href="#graphqlobjecttype">
+      <pre>class GraphQLObjectType</pre>
+      An object type within GraphQL that contains fields.
+    </a>
+  </li>
+  <li>
+    <a href="#graphqlinterfacetype">
+      <pre>class GraphQLInterfaceType</pre>
+      An interface type within GraphQL that defines fields implementations will contain.
+    </a>
+  </li>
+  <li>
+    <a href="#graphqluniontype">
+      <pre>class GraphQLUnionType</pre>
+      A union type within GraphQL that defines a list of implementations.
+    </a>
+  </li>
+  <li>
+    <a href="#graphqlenumtype">
+      <pre>class GraphQLEnumType</pre>
+      An enum type within GraphQL that defines a list of valid values.
+    </a>
+  </li>
+  <li>
+    <a href="#graphqlinputobjecttype">
+      <pre>class GraphQLInputObjectType</pre>
+      An input object type within GraphQL that represents structured inputs.
+    </a>
+  </li>
+  <li>
+    <a href="#graphqllist">
+      <pre>class GraphQLList</pre>
+      A type wrapper around other types that represents a list of those types.
+    </a>
+  </li>
+  <li>
+    <a href="#graphqlnonnull">
+      <pre>class GraphQLNonNull</pre>
+      A type wrapper around other types that represents a non-null version of those types.
+    </a>
+  </li>
+</ul>
+
+</div><p><em>Predicates</em></p><p>These types may be used as output types as the result of fields
+These types may describe types which may be leaf values
+These types may describe the parent context of a selection set
+These types may describe a combination of object types</p><div><ul class="apiIndex">
+  <li>
+    <a href="#isinputtype">
+      <pre>function isInputType</pre>
+      Returns if a type can be used as input types for arguments and directives.
+    </a>
+  </li>
+  <li>
+    <a href="#isoutputtype">
+      <pre>function isOutputType</pre>
+      Returns if a type can be used as output types as the result of fields.
+  </li>
+  <li>
+    <a href="#isleaftype">
+      <pre>function isLeafType</pre>
+      Returns if a type can be a leaf value in a response.
+    </a>
+  </li>
+  <li>
+    <a href="#iscompositetype">
+      <pre>function isCompositeType</pre>
+      Returns if a type can be the parent context of a selection set.
+    </a>
+  </li>
+  <li>
+    <a href="#isabstracttype">
+      <pre>function isAbstractType</pre>
+      Returns if a type is a combination of object types.
+    </a>
+  </li>
+</ul>
+
+</div><p><em>Un-modifiers</em></p><div><ul class="apiIndex">
+  <li>
+    <a href="#getnullabletype">
+      <pre>function getNullableType</pre>
+      Strips any non-null wrappers from a type.
+    </a>
+  </li>
+  <li>
+    <a href="#getnamedtype">
+      <pre>function getNamedType</pre>
+      Strips any non-null or list wrappers from a type.
+    </a>
+  </li>
+</ul>
+
+</div><p><em>Scalars</em></p><div><ul class="apiIndex">
+  <li>
+    <a href="#graphqlint">
+      <pre>var GraphQLInt</pre>
+      A scalar type representing integers.
+    </a>
+  </li>
+  <li>
+    <a href="#graphqlfloat">
+      <pre>var GraphQLFloat</pre>
+      A scalar type representing floats.
+    </a>
+  </li>
+  <li>
+    <a href="#graphqlstring">
+      <pre>var GraphQLString</pre>
+      A scalar type representing strings.
+    </a>
+  </li>
+  <li>
+    <a href="#graphqlboolean">
+      <pre>var GraphQLBoolean</pre>
+      A scalar type representing booleans.
+    </a>
+  </li>
+  <li>
+    <a href="#graphqlid">
+      <pre>var GraphQLID</pre>
+      A scalar type representing IDs.
+    </a>
+  </li>
+</ul>
+
+</div><h2><a class="anchor" name="schema"></a>Schema <a class="hash-link" href="#schema">#</a></h2><h3><a class="anchor" name="graphqlschema"></a>GraphQLSchema <a class="hash-link" href="#graphqlschema">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">class</span> <span class="token class-name">GraphQLSchema</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span>config<span class="token punctuation">:</span> GraphQLSchemaConfig<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+type GraphQLSchemaConfig <span class="token operator">=</span> <span class="token punctuation">{</span>
+  query<span class="token punctuation">:</span> GraphQLObjectType<span class="token punctuation">;</span>
+  mutation<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLObjectType<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></pre><p>A Schema is created by supplying the root types of each type of operation,
+query and mutation (optional). A schema definition is then supplied to the
+validator and executor.</p><h4><a class="anchor" name="example"></a>Example <a class="hash-link" href="#example">#</a></h4><pre class="prism language-javascript">
+<span class="token keyword">var</span> MyAppSchema <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GraphQLSchema</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  query<span class="token punctuation">:</span> MyAppQueryRootType
+  mutation<span class="token punctuation">:</span> MyAppMutationRootType
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><h2><a class="anchor" name="definitions"></a>Definitions <a class="hash-link" href="#definitions">#</a></h2><h3><a class="anchor" name="graphqlscalartype"></a>GraphQLScalarType <a class="hash-link" href="#graphqlscalartype">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">class</span> <span class="token class-name">GraphQLScalarType</span><span class="token operator">&lt;</span>InternalType<span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span>config<span class="token punctuation">:</span> GraphQLScalarTypeConfig<span class="token operator">&lt;</span>InternalType<span class="token operator">&gt;</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+type GraphQLScalarTypeConfig<span class="token operator">&lt;</span>InternalType<span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> string<span class="token punctuation">;</span>
+  description<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token operator">?</span>string<span class="token punctuation">;</span>
+  serialize<span class="token punctuation">:</span> <span class="token punctuation">(</span>value<span class="token punctuation">:</span> mixed<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token operator">?</span>InternalType<span class="token punctuation">;</span>
+  parseValue<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token punctuation">(</span>value<span class="token punctuation">:</span> mixed<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token operator">?</span>InternalType<span class="token punctuation">;</span>
+  parseLiteral<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token punctuation">(</span>valueAST<span class="token punctuation">:</span> Value<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token operator">?</span>InternalType<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></pre><p>The leaf values of any request and input values to arguments are
+Scalars (or Enums) and are defined with a name and a series of serialization
+functions used to ensure validity.</p><h4><a class="anchor" name="example"></a>Example <a class="hash-link" href="#example">#</a></h4><pre class="prism language-javascript">
+<span class="token keyword">var</span> OddType <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GraphQLScalarType</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> <span class="token string">&#x27;Odd&#x27;</span><span class="token punctuation">,</span>
+  serialize<span class="token punctuation">:</span> oddValue<span class="token punctuation">,</span>
+  parseValue<span class="token punctuation">:</span> oddValue<span class="token punctuation">,</span>
+  <span class="token function">parseLiteral</span><span class="token punctuation">(</span>ast<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>ast<span class="token punctuation">.</span>kind <span class="token operator">===</span> Kind<span class="token punctuation">.</span>INT<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> <span class="token function">oddValue</span><span class="token punctuation">(</span><span class="token function">parseInt</span><span class="token punctuation">(</span>ast<span class="token punctuation">.</span>value<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">oddValue</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> value <span class="token operator">%</span> <span class="token number">2</span> <span class="token operator">===</span> <span class="token number">1</span> <span class="token operator">?</span> value <span class="token punctuation">:</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></pre><h3><a class="anchor" name="graphqlobjecttype"></a>GraphQLObjectType <a class="hash-link" href="#graphqlobjecttype">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">class</span> <span class="token class-name">GraphQLObjectType</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span>config<span class="token punctuation">:</span> GraphQLObjectTypeConfig<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+type GraphQLObjectTypeConfig <span class="token operator">=</span> <span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> string<span class="token punctuation">;</span>
+  interfaces<span class="token operator">?</span><span class="token punctuation">:</span> GraphQLInterfacesThunk <span class="token operator">|</span> Array<span class="token operator">&lt;</span>GraphQLInterfaceType<span class="token operator">&gt;</span><span class="token punctuation">;</span>
+  fields<span class="token punctuation">:</span> GraphQLFieldConfigMapThunk <span class="token operator">|</span> GraphQLFieldConfigMap<span class="token punctuation">;</span>
+  isTypeOf<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token punctuation">(</span>value<span class="token punctuation">:</span> any<span class="token punctuation">,</span> info<span class="token operator">?</span><span class="token punctuation">:</span> GraphQLResolveInfo<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> boolean<span class="token punctuation">;</span>
+  description<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token operator">?</span>string
+<span class="token punctuation">}</span>
+
+type GraphQLInterfacesThunk <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> Array<span class="token operator">&lt;</span>GraphQLInterfaceType<span class="token operator">&gt;</span><span class="token punctuation">;</span>
+
+type GraphQLFieldConfigMapThunk <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> GraphQLFieldConfigMap<span class="token punctuation">;</span>
+
+type GraphQLFieldResolveFn <span class="token operator">=</span> <span class="token punctuation">(</span>
+  source<span class="token operator">?</span><span class="token punctuation">:</span> any<span class="token punctuation">,</span>
+  args<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">[</span>argName<span class="token punctuation">:</span> string<span class="token punctuation">]</span><span class="token punctuation">:</span> any<span class="token punctuation">}</span><span class="token punctuation">,</span>
+  info<span class="token operator">?</span><span class="token punctuation">:</span> GraphQLResolveInfo
+<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> any
+
+type GraphQLResolveInfo <span class="token operator">=</span> <span class="token punctuation">{</span>
+  fieldName<span class="token punctuation">:</span> string<span class="token punctuation">,</span>
+  fieldASTs<span class="token punctuation">:</span> Array<span class="token operator">&lt;</span>Field<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  returnType<span class="token punctuation">:</span> GraphQLOutputType<span class="token punctuation">,</span>
+  parentType<span class="token punctuation">:</span> GraphQLCompositeType<span class="token punctuation">,</span>
+  schema<span class="token punctuation">:</span> GraphQLSchema<span class="token punctuation">,</span>
+  fragments<span class="token punctuation">:</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span>fragmentName<span class="token punctuation">:</span> string<span class="token punctuation">]</span><span class="token punctuation">:</span> FragmentDefinition <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  rootValue<span class="token punctuation">:</span> any<span class="token punctuation">,</span>
+  operation<span class="token punctuation">:</span> OperationDefinition<span class="token punctuation">,</span>
+  variableValues<span class="token punctuation">:</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span>variableName<span class="token punctuation">:</span> string<span class="token punctuation">]</span><span class="token punctuation">:</span> any <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+
+type GraphQLFieldConfig <span class="token operator">=</span> <span class="token punctuation">{</span>
+  type<span class="token punctuation">:</span> GraphQLOutputType<span class="token punctuation">;</span>
+  args<span class="token operator">?</span><span class="token punctuation">:</span> GraphQLFieldConfigArgumentMap<span class="token punctuation">;</span>
+  resolve<span class="token operator">?</span><span class="token punctuation">:</span> GraphQLFieldResolveFn<span class="token punctuation">;</span>
+  deprecationReason<span class="token operator">?</span><span class="token punctuation">:</span> string<span class="token punctuation">;</span>
+  description<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token operator">?</span>string<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+type GraphQLFieldConfigArgumentMap <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token punctuation">[</span>argName<span class="token punctuation">:</span> string<span class="token punctuation">]</span><span class="token punctuation">:</span> GraphQLArgumentConfig<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+type GraphQLArgumentConfig <span class="token operator">=</span> <span class="token punctuation">{</span>
+  type<span class="token punctuation">:</span> GraphQLInputType<span class="token punctuation">;</span>
+  defaultValue<span class="token operator">?</span><span class="token punctuation">:</span> any<span class="token punctuation">;</span>
+  description<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token operator">?</span>string<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+type GraphQLFieldConfigMap <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token punctuation">[</span>fieldName<span class="token punctuation">:</span> string<span class="token punctuation">]</span><span class="token punctuation">:</span> GraphQLFieldConfig<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></pre><p>Almost all of the GraphQL types you define will be object types. Object types
+have a name, but most importantly describe their fields.</p><p>When two types need to refer to each other, or a type needs to refer to
+itself in a field, you can use a function expression (aka a closure or a
+thunk) to supply the fields lazily.</p><h4><a class="anchor" name="examples"></a>Examples <a class="hash-link" href="#examples">#</a></h4><pre class="prism language-javascript">
+<span class="token keyword">var</span> AddressType <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GraphQLObjectType</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> <span class="token string">&#x27;Address&#x27;</span><span class="token punctuation">,</span>
+  fields<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    street<span class="token punctuation">:</span> <span class="token punctuation">{</span> type<span class="token punctuation">:</span> GraphQLString <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    number<span class="token punctuation">:</span> <span class="token punctuation">{</span> type<span class="token punctuation">:</span> GraphQLInt <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    formatted<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      type<span class="token punctuation">:</span> GraphQLString<span class="token punctuation">,</span>
+      <span class="token function">resolve</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> obj<span class="token punctuation">.</span>number <span class="token operator">+</span> <span class="token string">&#x27; &#x27;</span> <span class="token operator">+</span> obj<span class="token punctuation">.</span>street
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> PersonType <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GraphQLObjectType</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> <span class="token string">&#x27;Person&#x27;</span><span class="token punctuation">,</span>
+  fields<span class="token punctuation">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
+    name<span class="token punctuation">:</span> <span class="token punctuation">{</span> type<span class="token punctuation">:</span> GraphQLString <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    bestFriend<span class="token punctuation">:</span> <span class="token punctuation">{</span> type<span class="token punctuation">:</span> PersonType <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><h3><a class="anchor" name="graphqlinterfacetype"></a>GraphQLInterfaceType <a class="hash-link" href="#graphqlinterfacetype">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">class</span> <span class="token class-name">GraphQLInterfaceType</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span>config<span class="token punctuation">:</span> GraphQLInterfaceTypeConfig<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+type GraphQLInterfaceTypeConfig <span class="token operator">=</span> <span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> string<span class="token punctuation">,</span>
+  fields<span class="token punctuation">:</span> GraphQLFieldConfigMapThunk <span class="token operator">|</span> GraphQLFieldConfigMap<span class="token punctuation">,</span>
+  resolveType<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token punctuation">(</span>value<span class="token punctuation">:</span> any<span class="token punctuation">,</span> info<span class="token operator">?</span><span class="token punctuation">:</span> GraphQLResolveInfo<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token operator">?</span>GraphQLObjectType<span class="token punctuation">,</span>
+  description<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token operator">?</span>string
+<span class="token punctuation">}</span><span class="token punctuation">;</span></pre><p>When a field can return one of a heterogeneous set of types, a Interface type
+is used to describe what types are possible, what fields are in common across
+all types, as well as a function to determine which type is actually used
+when the field is resolved.</p><h4><a class="anchor" name="example"></a>Example <a class="hash-link" href="#example">#</a></h4><pre class="prism language-javascript">
+<span class="token keyword">var</span> EntityType <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GraphQLInterfaceType</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> <span class="token string">&#x27;Entity&#x27;</span><span class="token punctuation">,</span>
+  fields<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    name<span class="token punctuation">:</span> <span class="token punctuation">{</span> type<span class="token punctuation">:</span> GraphQLString <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><h3><a class="anchor" name="graphqluniontype"></a>GraphQLUnionType <a class="hash-link" href="#graphqluniontype">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">class</span> <span class="token class-name">GraphQLUnionType</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span>config<span class="token punctuation">:</span> GraphQLUnionTypeConfig<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+type GraphQLUnionTypeConfig <span class="token operator">=</span> <span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> string<span class="token punctuation">,</span>
+  types<span class="token punctuation">:</span> Array<span class="token operator">&lt;</span>GraphQLObjectType<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  resolveType<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token punctuation">(</span>value<span class="token punctuation">:</span> any<span class="token punctuation">,</span> info<span class="token operator">?</span><span class="token punctuation">:</span> GraphQLResolveInfo<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token operator">?</span>GraphQLObjectType<span class="token punctuation">;</span>
+  description<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token operator">?</span>string<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></pre><p>When a field can return one of a heterogeneous set of types, a Union type
+is used to describe what types are possible as well as providing a function
+to determine which type is actually used when the field is resolved.</p><h3><a class="anchor" name="example"></a>Example <a class="hash-link" href="#example">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">var</span> PetType <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GraphQLUnionType</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> <span class="token string">&#x27;Pet&#x27;</span><span class="token punctuation">,</span>
+  types<span class="token punctuation">:</span> <span class="token punctuation">[</span> DogType<span class="token punctuation">,</span> CatType <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token function">resolveType</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token keyword">instanceof</span> <span class="token class-name">Dog</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> DogType<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token keyword">instanceof</span> <span class="token class-name">Cat</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> CatType<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><h3><a class="anchor" name="graphqlenumtype"></a>GraphQLEnumType <a class="hash-link" href="#graphqlenumtype">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">class</span> <span class="token class-name">GraphQLEnumType</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span>config<span class="token punctuation">:</span> GraphQLEnumTypeConfig<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+type GraphQLEnumTypeConfig <span class="token operator">=</span> <span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> string<span class="token punctuation">;</span>
+  values<span class="token punctuation">:</span> GraphQLEnumValueConfigMap<span class="token punctuation">;</span>
+  description<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token operator">?</span>string<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+type GraphQLEnumValueConfigMap <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token punctuation">[</span>valueName<span class="token punctuation">:</span> string<span class="token punctuation">]</span><span class="token punctuation">:</span> GraphQLEnumValueConfig<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+type GraphQLEnumValueConfig <span class="token operator">=</span> <span class="token punctuation">{</span>
+  value<span class="token operator">?</span><span class="token punctuation">:</span> any<span class="token punctuation">;</span>
+  deprecationReason<span class="token operator">?</span><span class="token punctuation">:</span> string<span class="token punctuation">;</span>
+  description<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token operator">?</span>string<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+type GraphQLEnumValueDefinition <span class="token operator">=</span> <span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> string<span class="token punctuation">;</span>
+  value<span class="token operator">?</span><span class="token punctuation">:</span> any<span class="token punctuation">;</span>
+  deprecationReason<span class="token operator">?</span><span class="token punctuation">:</span> string<span class="token punctuation">;</span>
+  description<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token operator">?</span>string<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></pre><p>Some leaf values of requests and input values are Enums. GraphQL serializes
+Enum values as strings, however internally Enums can be represented by any
+kind of type, often integers.</p><p>Note: If a value is not provided in a definition, the name of the enum value
+will be used as it&#x27;s internal value.</p><h4><a class="anchor" name="example"></a>Example <a class="hash-link" href="#example">#</a></h4><pre class="prism language-javascript">
+<span class="token keyword">var</span> RGBType <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GraphQLEnumType</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> <span class="token string">&#x27;RGB&#x27;</span><span class="token punctuation">,</span>
+  values<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    RED<span class="token punctuation">:</span> <span class="token punctuation">{</span> value<span class="token punctuation">:</span> <span class="token number">0</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    GREEN<span class="token punctuation">:</span> <span class="token punctuation">{</span> value<span class="token punctuation">:</span> <span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    BLUE<span class="token punctuation">:</span> <span class="token punctuation">{</span> value<span class="token punctuation">:</span> <span class="token number">2</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><h3><a class="anchor" name="graphqlinputobjecttype"></a>GraphQLInputObjectType <a class="hash-link" href="#graphqlinputobjecttype">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">class</span> <span class="token class-name">GraphQLInputObjectType</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span>config<span class="token punctuation">:</span> GraphQLInputObjectTypeConfig<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+type InputObjectConfig <span class="token operator">=</span> <span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> string<span class="token punctuation">;</span>
+  fields<span class="token punctuation">:</span> InputObjectConfigFieldMapThunk <span class="token operator">|</span> InputObjectConfigFieldMap<span class="token punctuation">;</span>
+  description<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token operator">?</span>string<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+type InputObjectConfigFieldMapThunk <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> InputObjectConfigFieldMap<span class="token punctuation">;</span>
+
+type InputObjectFieldConfig <span class="token operator">=</span> <span class="token punctuation">{</span>
+  type<span class="token punctuation">:</span> GraphQLInputType<span class="token punctuation">;</span>
+  defaultValue<span class="token operator">?</span><span class="token punctuation">:</span> any<span class="token punctuation">;</span>
+  description<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token operator">?</span>string<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+type InputObjectConfigFieldMap <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token punctuation">[</span>fieldName<span class="token punctuation">:</span> string<span class="token punctuation">]</span><span class="token punctuation">:</span> InputObjectFieldConfig<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+type InputObjectField <span class="token operator">=</span> <span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> string<span class="token punctuation">;</span>
+  type<span class="token punctuation">:</span> GraphQLInputType<span class="token punctuation">;</span>
+  defaultValue<span class="token operator">?</span><span class="token punctuation">:</span> any<span class="token punctuation">;</span>
+  description<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token operator">?</span>string<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+type InputObjectFieldMap <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token punctuation">[</span>fieldName<span class="token punctuation">:</span> string<span class="token punctuation">]</span><span class="token punctuation">:</span> InputObjectField<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></pre><p>An input object defines a structured collection of fields which may be
+supplied to a field argument.</p><p>Using <code>NonNull</code> will ensure that a value must be provided by the query</p><h4><a class="anchor" name="example"></a>Example <a class="hash-link" href="#example">#</a></h4><pre class="prism language-javascript">
+<span class="token keyword">var</span> GeoPoint <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GraphQLInputObjectType</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> <span class="token string">&#x27;GeoPoint&#x27;</span><span class="token punctuation">,</span>
+  fields<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    lat<span class="token punctuation">:</span> <span class="token punctuation">{</span> type<span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token class-name">GraphQLNonNull</span><span class="token punctuation">(</span>GraphQLFloat<span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    lon<span class="token punctuation">:</span> <span class="token punctuation">{</span> type<span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token class-name">GraphQLNonNull</span><span class="token punctuation">(</span>GraphQLFloat<span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    alt<span class="token punctuation">:</span> <span class="token punctuation">{</span> type<span class="token punctuation">:</span> GraphQLFloat<span class="token punctuation">,</span> defaultValue<span class="token punctuation">:</span> <span class="token number">0</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><h3><a class="anchor" name="graphqllist"></a>GraphQLList <a class="hash-link" href="#graphqllist">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">class</span> <span class="token class-name">GraphQLList</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> GraphQLType<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></pre><p>A list is a kind of type marker, a wrapping type which points to another
+type. Lists are often created within the context of defining the fields of
+an object type.</p><h4><a class="anchor" name="example"></a>Example <a class="hash-link" href="#example">#</a></h4><pre class="prism language-javascript">
+<span class="token keyword">var</span> PersonType <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GraphQLObjectType</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> <span class="token string">&#x27;Person&#x27;</span><span class="token punctuation">,</span>
+  fields<span class="token punctuation">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
+    parents<span class="token punctuation">:</span> <span class="token punctuation">{</span> type<span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token class-name">GraphQLList</span><span class="token punctuation">(</span>Person<span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    children<span class="token punctuation">:</span> <span class="token punctuation">{</span> type<span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token class-name">GraphQLList</span><span class="token punctuation">(</span>Person<span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><h3><a class="anchor" name="graphqlnonnull"></a>GraphQLNonNull <a class="hash-link" href="#graphqlnonnull">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">class</span> <span class="token class-name">GraphQLNonNull</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> GraphQLType<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></pre><p>A non-null is a kind of type marker, a wrapping type which points to another
+type. Non-null types enforce that their values are never null and can ensure
+an error is raised if this ever occurs during a request. It is useful for
+fields which you can make a strong guarantee on non-nullability, for example
+usually the id field of a database row will never be null.</p><h4><a class="anchor" name="example"></a>Example <a class="hash-link" href="#example">#</a></h4><pre class="prism language-javascript">
+<span class="token keyword">var</span> RowType <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GraphQLObjectType</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> <span class="token string">&#x27;Row&#x27;</span><span class="token punctuation">,</span>
+  fields<span class="token punctuation">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
+    id<span class="token punctuation">:</span> <span class="token punctuation">{</span> type<span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token class-name">GraphQLNonNull</span><span class="token punctuation">(</span>String<span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><h2><a class="anchor" name="predicates"></a>Predicates <a class="hash-link" href="#predicates">#</a></h2><h3><a class="anchor" name="isinputtype"></a>isInputType <a class="hash-link" href="#isinputtype">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">isInputType</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLType<span class="token punctuation">)</span><span class="token punctuation">:</span> boolean</pre><p>These types may be used as input types for arguments and directives.</p><h3><a class="anchor" name="isoutputtype"></a>isOutputType <a class="hash-link" href="#isoutputtype">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">isOutputType</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLType<span class="token punctuation">)</span><span class="token punctuation">:</span> boolean</pre><p>These types may be used as output types as the result of fields</p><h3><a class="anchor" name="isleaftype"></a>isLeafType <a class="hash-link" href="#isleaftype">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">isLeafType</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLType<span class="token punctuation">)</span><span class="token punctuation">:</span> boolean</pre><p>These types may describe types which may be leaf values</p><h3><a class="anchor" name="iscompositetype"></a>isCompositeType <a class="hash-link" href="#iscompositetype">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">isCompositeType</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLType<span class="token punctuation">)</span><span class="token punctuation">:</span> boolean</pre><p>These types may describe the parent context of a selection set</p><h3><a class="anchor" name="isabstracttype"></a>isAbstractType <a class="hash-link" href="#isabstracttype">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">isAbstractType</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLType<span class="token punctuation">)</span><span class="token punctuation">:</span> boolean</pre><p>These types may describe a combination of object types</p><h2><a class="anchor" name="un-modifiers"></a>Un-modifiers <a class="hash-link" href="#un-modifiers">#</a></h2><h3><a class="anchor" name="getnullabletype"></a>getNullableType <a class="hash-link" href="#getnullabletype">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">getNullableType</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLType<span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLNullableType</pre><p>If a given type is non-nullable, this strips the non-nullability and
+returns the underlying type.</p><h3><a class="anchor" name="getnamedtype"></a>getNamedType <a class="hash-link" href="#getnamedtype">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">getNamedType</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLType<span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLNamedType</pre><p>If a given type is non-nullable or a list, this repeated strips the
+non-nullability and list wrappers and returns the underlying type.</p><h2><a class="anchor" name="scalars"></a>Scalars <a class="hash-link" href="#scalars">#</a></h2><h3><a class="anchor" name="graphqlint"></a>GraphQLInt <a class="hash-link" href="#graphqlint">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">var</span> GraphQLInt<span class="token punctuation">:</span> GraphQLScalarType<span class="token punctuation">;</span></pre><p>A <code>GraphQLScalarType</code> that represents an int.</p><h3><a class="anchor" name="graphqlfloat"></a>GraphQLFloat <a class="hash-link" href="#graphqlfloat">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">var</span> GraphQLFloat<span class="token punctuation">:</span> GraphQLScalarType<span class="token punctuation">;</span></pre><p>A <code>GraphQLScalarType</code> that represents a float.</p><h3><a class="anchor" name="graphqlstring"></a>GraphQLString <a class="hash-link" href="#graphqlstring">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">var</span> GraphQLString<span class="token punctuation">:</span> GraphQLScalarType<span class="token punctuation">;</span></pre><p>A <code>GraphQLScalarType</code> that represents a string.</p><h3><a class="anchor" name="graphqlboolean"></a>GraphQLBoolean <a class="hash-link" href="#graphqlboolean">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">var</span> GraphQLBoolean<span class="token punctuation">:</span> GraphQLScalarType<span class="token punctuation">;</span></pre><p>A <code>GraphQLScalarType</code> that represents a boolean.</p><h3><a class="anchor" name="graphqlid"></a>GraphQLID <a class="hash-link" href="#graphqlid">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">var</span> GraphQLID<span class="token punctuation">:</span> GraphQLScalarType<span class="token punctuation">;</span></pre><p>A <code>GraphQLScalarType</code> that represents an ID.</p></div><div class="docs-prevnext"><a class="docs-next" href="/docs/api-reference-validation">Next →</a></div></div></section><footer class="wrap"><div class="right">©2015 Facebook Inc.</div></footer></div><div id="fb-root"></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+            docsearch({
+              apiKey: 'd103541f3e6041148aade2e746ed4d61',
+              indexName: 'graphql',
+              inputSelector: '#algolia-doc-search'
+            });
+          </script></body></html>

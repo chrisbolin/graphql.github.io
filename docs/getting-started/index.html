@@ -1,0 +1,80 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Getting Started | GraphQL</title><meta name="viewport" content="width=device-width"><meta property="og:title" content="GraphQL | A data query language and runtime"><meta property="og:type" content="website"><meta property="og:url" content="http://graphql.org/"><meta property="og:description" content="A data query language and runtime"><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"><link rel="shortcut icon" href="/img/favicon.png"><link rel="stylesheet" href="/css/graphql.css"><script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script><script type="text/javascript">try{Typekit.load();}catch(e){}</script></head><body><div class="container"><div class="nav-main"><div class="wrap"><a class="nav-home" href="/"><img class="nav-logo" src="/img/logo.svg" width="40" height="40">GraphQL</a><div class="nav-site-wrapper"><ul class="nav-site nav-site-internal"><li><a href="/docs/getting-started/" class="active">Docs</a></li><li><a href="/blog/" class="">Blog</a></li><li><a href="/help/" class="">Help</a></li><li><a href="/code/" class="">Code</a></li></ul><div class="algolia-search-wrapper"><input id="algolia-doc-search" type="text" placeholder="Search docs..."></div><ul class="nav-site nav-site-external"><li><a href="http://facebook.github.io/graphql/" target="_blank" class="">Spec</a></li></ul></div></div></div><section class="content wrap documentationContent"><div class="nav-docs"><div class="nav-docs-section"><h3>Quick Start</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/getting-started/">Getting Started</a></li><li><a style="margin-left:0;" class="active" href="/docs/videos/">Videos</a></li></ul></div><div class="nav-docs-section"><h3>Walkthrough</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/intro/">Introduction</a></li><li><a style="margin-left:0;" class="active" href="/docs/typesystem/">Type System</a></li><li><a style="margin-left:0;" class="active" href="/docs/queries/">Queries</a></li><li><a style="margin-left:0;" class="active" href="/docs/validation/">Validation</a></li><li><a style="margin-left:0;" class="active" href="/docs/introspection/">Introspection</a></li></ul></div><div class="nav-docs-section"><h3>API Reference</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/api-reference-graphql/">GraphQL</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-language/">Language</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-type-system/">Type System</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-validation/">Validation</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-execution/">Execution</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-errors/">Errors</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-utilities/">Utilties</a></li></ul></div></div><div class="inner-content"><h1>Getting Started</h1><div><p>Let&#x27;s build a basic GraphQL server from scratch. We&#x27;ll be using the <strong><a href="https://github.com/graphql/graphql-js" target="_blank">graphql-js</a></strong> reference implementation of GraphQL for this example.</p><p>Our server will be simple; it will have one type, a <code>User</code>, where a user has two fields; an <code>id</code> and a <code>name</code>. For an example of a more complex server and additional features,
+check out the <strong><a href="../intro" target="_blank">walkthrough</a></strong> section of the docs.</p><h2><a class="anchor" name="setup"></a>Setup <a class="hash-link" href="#setup">#</a></h2><p>We&#x27;ll start by making a folder for our demo server.</p><pre class="prism language-javascript">
+mkdir graphql<span class="token operator">-</span>demo
+cd graphql<span class="token operator">-</span>demo</pre><p>Now, we&#x27;ll install the three packages that we need:</p><ol><li><strong><a href="https://github.com/graphql/graphql-js" target="_blank">graphql</a></strong>, the reference implementation of GraphQL in JS.</li><li><strong><a href="https://github.com/strongloop/express" target="_blank">express</a></strong>, a basic web framework.</li><li><strong><a href="https://github.com/graphql/express-graphql" target="_blank">express-graphql</a></strong>, middleware for express to make it easy to expose a GraphQL server.</li></ol><p>We install these three packages by running:</p><pre class="prism language-javascript">
+npm init <span class="token operator">-</span>f
+npm install graphql <span class="token operator">--</span>save
+npm install express <span class="token operator">--</span>save
+npm install express<span class="token operator">-</span>graphql <span class="token operator">--</span>save</pre><h2><a class="anchor" name="server"></a>Server <a class="hash-link" href="#server">#</a></h2><p>Now that we have our packages installed, let&#x27;s quickly define our data set of users, in <code>data.json</code>:</p><pre class="prism language-javascript">
+<span class="token punctuation">{</span>
+  <span class="token string">&quot;1&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;id&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;name&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;Dan&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;2&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;id&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;2&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;name&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;Lee&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;3&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;id&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;3&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;name&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;Nick&quot;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></pre><p>We&#x27;ll create a very basic GraphQL schema to describe that data set in
+<code>index.js</code>, then allow that GraphQL Schema to be queried over HTTP.</p><pre class="prism language-javascript">
+<span class="token keyword">var</span> graphql <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;graphql&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> graphqlHTTP <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;express-graphql&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> express <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;express&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span spellcheck="true" class="token comment">// Import our data set from above</span>
+<span class="token keyword">var</span> data <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;./data.json&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span spellcheck="true" class="token comment">// Define our user type, with two string fields; `id` and `name`</span>
+<span class="token keyword">var</span> userType <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">graphql<span class="token punctuation">.</span>GraphQLObjectType</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> <span class="token string">&#x27;User&#x27;</span><span class="token punctuation">,</span>
+  fields<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    id<span class="token punctuation">:</span> <span class="token punctuation">{</span> type<span class="token punctuation">:</span> graphql<span class="token punctuation">.</span>GraphQLString <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    name<span class="token punctuation">:</span> <span class="token punctuation">{</span> type<span class="token punctuation">:</span> graphql<span class="token punctuation">.</span>GraphQLString <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span spellcheck="true" class="token comment">// Define our schema, with one top level field, named `user`, that</span>
+<span spellcheck="true" class="token comment">// takes an `id` argument and returns the User with that ID.</span>
+<span class="token keyword">var</span> schema <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">graphql<span class="token punctuation">.</span>GraphQLSchema</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  query<span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token class-name">graphql<span class="token punctuation">.</span>GraphQLObjectType</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    name<span class="token punctuation">:</span> <span class="token string">&#x27;Query&#x27;</span><span class="token punctuation">,</span>
+    fields<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      user<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        type<span class="token punctuation">:</span> userType<span class="token punctuation">,</span>
+        args<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          id<span class="token punctuation">:</span> <span class="token punctuation">{</span> type<span class="token punctuation">:</span> graphql<span class="token punctuation">.</span>GraphQLString <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        resolve<span class="token punctuation">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>_<span class="token punctuation">,</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token keyword">return</span> data<span class="token punctuation">[</span>args<span class="token punctuation">.</span>id<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">&#x27;Server online!&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">express</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token string">&#x27;/graphql&#x27;</span><span class="token punctuation">,</span> <span class="token function">graphqlHTTP</span><span class="token punctuation">(</span><span class="token punctuation">{</span> schema<span class="token punctuation">:</span> schema<span class="token punctuation">,</span> pretty<span class="token punctuation">:</span> <span class="token keyword">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">listen</span><span class="token punctuation">(</span><span class="token number">3000</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><div>
+
+</div><p>That&#x27;s it! Our basic GraphQL server is done!</p><h2><a class="anchor" name="testing"></a>Testing <a class="hash-link" href="#testing">#</a></h2><p>Let&#x27;s test our GraphQL server. We start by running</p><pre class="prism language-javascript">
+node index<span class="token punctuation">.</span>js</pre><p>The server should announce that it is online. We can verify that by hitting
+<code>http://localhost:3000/graphql?query={user(id:%221%22){name}}</code>, which will
+execute this GraphQL query which asks to fetch the user with ID &quot;1&quot;, and return
+that user&#x27;s name.</p><div><div id="r101"><div class="miniGraphiQL" data-reactid=".1bbubv8nrpc" data-react-checksum="1737834414"><div class="query-editor" data-reactid=".1bbubv8nrpc.0"></div><div class="result-window" data-reactid=".1bbubv8nrpc.1"></div></div></div>
+
+</div><p>To fetch a different user, we can run <code>http://localhost:3000/graphql?query={user(id:%222%22){name}}</code>
+to execute this GraphQL query with a changed the ID, so we&#x27;ll get the name of
+that user instead:</p><div><div id="r102"><div class="miniGraphiQL" data-reactid=".1q3sxkb8pvk" data-react-checksum="1356218217"><div class="query-editor" data-reactid=".1q3sxkb8pvk.0"></div><div class="result-window" data-reactid=".1q3sxkb8pvk.1"></div></div></div>
+</div></div><div class="docs-prevnext"><a class="docs-next" href="/docs/videos">Next →</a></div></div></section><footer class="wrap"><div class="right">©2015 Facebook Inc.</div></footer></div><div id="fb-root"></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+            docsearch({
+              apiKey: 'd103541f3e6041148aade2e746ed4d61',
+              indexName: 'graphql',
+              inputSelector: '#algolia-doc-search'
+            });
+          </script><script src="//cdn.jsdelivr.net/react/0.13.3/react.js"></script><script src="index.html.6da90a1b5509ff6dbaf0.js"></script></body></html>

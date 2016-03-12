@@ -1,0 +1,79 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Queries | GraphQL</title><meta name="viewport" content="width=device-width"><meta property="og:title" content="GraphQL | A data query language and runtime"><meta property="og:type" content="website"><meta property="og:url" content="http://graphql.org/"><meta property="og:description" content="A data query language and runtime"><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"><link rel="shortcut icon" href="/img/favicon.png"><link rel="stylesheet" href="/css/graphql.css"><script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script><script type="text/javascript">try{Typekit.load();}catch(e){}</script></head><body><div class="container"><div class="nav-main"><div class="wrap"><a class="nav-home" href="/"><img class="nav-logo" src="/img/logo.svg" width="40" height="40">GraphQL</a><div class="nav-site-wrapper"><ul class="nav-site nav-site-internal"><li><a href="/docs/getting-started/" class="active">Docs</a></li><li><a href="/blog/" class="">Blog</a></li><li><a href="/help/" class="">Help</a></li><li><a href="/code/" class="">Code</a></li></ul><div class="algolia-search-wrapper"><input id="algolia-doc-search" type="text" placeholder="Search docs..."></div><ul class="nav-site nav-site-external"><li><a href="http://facebook.github.io/graphql/" target="_blank" class="">Spec</a></li></ul></div></div></div><section class="content wrap documentationContent"><div class="nav-docs"><div class="nav-docs-section"><h3>Quick Start</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/getting-started/">Getting Started</a></li><li><a style="margin-left:0;" class="active" href="/docs/videos/">Videos</a></li></ul></div><div class="nav-docs-section"><h3>Walkthrough</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/intro/">Introduction</a></li><li><a style="margin-left:0;" class="active" href="/docs/typesystem/">Type System</a></li><li><a style="margin-left:0;" class="active" href="/docs/queries/">Queries</a></li><li><a style="margin-left:0;" class="active" href="/docs/validation/">Validation</a></li><li><a style="margin-left:0;" class="active" href="/docs/introspection/">Introspection</a></li></ul></div><div class="nav-docs-section"><h3>API Reference</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/api-reference-graphql/">GraphQL</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-language/">Language</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-type-system/">Type System</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-validation/">Validation</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-execution/">Execution</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-errors/">Errors</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-utilities/">Utilties</a></li></ul></div></div><div class="inner-content"><h1>Queries</h1><div><p>GraphQL queries declaratively describe what data the issuer wishes
+to fetch from whoever is fulfilling the GraphQL query.</p><p>For our Star Wars example, the
+<a href="https://github.com/graphql/graphql-js/blob/master/src/__tests__/starWarsQueryTests.js" target="_blank">starWarsQueryTests.js</a>
+file in the GraphQL.js repository contains a number of queries and responses.
+That file is a test file that uses the schema discussed in the &quot;Type System&quot; walkthrough and a set of
+sample data, located in
+<a href="https://github.com/graphql/graphql-js/blob/master/src/__tests__/starWarsData.js" target="_blank">starWarsData.js</a>.
+This test file can be run to exercise the reference implementation.</p><p>An example query on this schema would be:</p><div><div id="r101"><div class="miniGraphiQL" data-reactid=".3tim7fmrk0" data-react-checksum="1848196579"><div class="query-editor" data-reactid=".3tim7fmrk0.0"></div><div class="result-window" data-reactid=".3tim7fmrk0.1"></div></div></div>
+
+</div><p>The initial line, <code>query HeroNameQuery</code>, defines a query with the operation
+name <code>HeroNameQuery</code> that starts with the schema&#x27;s root query type; in this
+case, <code>Query</code>. As defined above, <code>Query</code> has a <code>hero</code> field that returns a
+<code>Character</code>, so we&#x27;ll query for that. <code>Character</code> then has a <code>name</code> field that
+returns a <code>String</code>, so we query for that, completing our query.</p><p>Specifying the <code>query</code> keyword and an operation name is only required when a
+GraphQL document defines multiple operations.  We therefore could have written
+the previous query with the query shorthand:</p><div><div id="r102"><div class="miniGraphiQL" data-reactid=".16jbex73z7k" data-react-checksum="-678674967"><div class="query-editor" data-reactid=".16jbex73z7k.0"></div><div class="result-window" data-reactid=".16jbex73z7k.1"></div></div></div>
+
+</div><p>Assuming that the backing data for the GraphQL server identified R2-D2 as the
+hero. The response continues to vary based on the request; if we asked for
+R2-D2&#x27;s ID and friends with this query then we&#x27;ll get back a response like this:</p><div><div id="r103"><div class="miniGraphiQL" data-reactid=".14iu3oa7xmo" data-react-checksum="213925530"><div class="query-editor" data-reactid=".14iu3oa7xmo.0"></div><div class="result-window" data-reactid=".14iu3oa7xmo.1"></div></div></div>
+
+</div><p>One of the key aspects of GraphQL is its ability to nest queries. In the
+above query, we asked for R2-D2&#x27;s friends, but we can ask for more information
+about each of those objects. So let&#x27;s construct a query that asks for R2-D2&#x27;s
+friends, gets their name and episode appearances, then asks for each of <em>their</em>
+friends, resulting in a nested response.</p><div><div id="r104"><div class="miniGraphiQL" data-reactid=".i4sjd2cykg" data-react-checksum="-1813889439"><div class="query-editor" data-reactid=".i4sjd2cykg.0"></div><div class="result-window" data-reactid=".i4sjd2cykg.1"></div></div></div>
+
+</div><p>The <code>Query</code> type defined a way to fetch a human given their
+ID. We can use it by hardcoding the ID in the query:</p><div><div id="r105"><div class="miniGraphiQL" data-reactid=".zvmf49y6tc" data-react-checksum="-1865793975"><div class="query-editor" data-reactid=".zvmf49y6tc.0"></div><div class="result-window" data-reactid=".zvmf49y6tc.1"></div></div></div>
+
+</div><p>Alternately, we could have defined the query to have a query parameter:</p><div><div id="r106"><div class="miniGraphiQL" data-reactid=".2ajqc104d8g" data-react-checksum="-1346749086"><div class="query-editor" data-reactid=".2ajqc104d8g.0"></div><div class="result-window" data-reactid=".2ajqc104d8g.1"></div></div></div>
+
+</div><p>This query is now parameterized by <code>$someId</code>; to run it, we must provide
+that ID. If we ran it with <code>$someId</code> provided as &quot;1000&quot;, we would get Luke;
+provided as &quot;1002&quot;, we would get Han. If we passed an invalid ID here,
+we would get <code>null</code> back for the <code>human</code>, indicating that no such object
+exists. If we don&#x27;t provide <code>$someId</code> at all, an error is returned. In the above
+example, we ran the query with <code>$someId</code> set to &quot;1000&quot;.</p><p>Notice that the key in the response is the name of the field, by default.
+It is sometimes useful to change this key, for clarity or to avoid key
+collisions when fetching the same field with different arguments.</p><p>We can do that with field aliases, as demonstrated in the following query where
+we aliased the result of the <code>human</code> field to the key <code>luke</code>:</p><div><div id="r107"><div class="miniGraphiQL" data-reactid=".1kbio8w2ghs" data-react-checksum="912670482"><div class="query-editor" data-reactid=".1kbio8w2ghs.0"></div><div class="result-window" data-reactid=".1kbio8w2ghs.1"></div></div></div>
+
+</div><p>Notice the key in the response is &quot;luke&quot; and not &quot;human&quot;, as it was in our
+previous example where we did not use the alias.</p><p>This is particularly useful if we want to use the same field twice
+with different arguments, as in the following query where we alias the result of
+the first <code>human</code> field to the key <code>luke</code>, and the second to <code>leia</code>:</p><div><div id="r108"><div class="miniGraphiQL" data-reactid=".1v5ru5c2a68" data-react-checksum="-1527825093"><div class="query-editor" data-reactid=".1v5ru5c2a68.0"></div><div class="result-window" data-reactid=".1v5ru5c2a68.1"></div></div></div>
+
+</div><p>Now imagine we wanted to ask for Luke and Leia&#x27;s home planets. We could do so
+with this query:</p><div><div id="r109"><div class="miniGraphiQL" data-reactid=".vgrxhcdp1c" data-react-checksum="-770883819"><div class="query-editor" data-reactid=".vgrxhcdp1c.0"></div><div class="result-window" data-reactid=".vgrxhcdp1c.1"></div></div></div>
+
+</div><p>but we can already see that this could get unwieldy, since we have to add new
+fields to both parts of the query. Instead, we can extract out the common fields
+into a fragment, and include the fragment in the query, to get the same result.</p><div><div id="r110"><div class="miniGraphiQL" data-reactid=".2ag9bgonhfk" data-react-checksum="1277181789"><div class="query-editor" data-reactid=".2ag9bgonhfk.0"></div><div class="result-window" data-reactid=".2ag9bgonhfk.1"></div></div></div>
+
+</div><p>The two previous queries will both get the same result, but using fragments was
+less verbose or fragile; if we wanted to add more fields, we could add
+it to the common fragment rather than copying it into multiple places.</p><p>We defined the type system above, so we know the type of each object
+in the output; the query can ask for that type using the special
+field <code>__typename</code>, defined on every object. Since R2-D2 is a droid, this will
+return <code>Droid</code>.</p><div><div id="r111"><div class="miniGraphiQL" data-reactid=".7tbaayp1xc" data-react-checksum="-1711260045"><div class="query-editor" data-reactid=".7tbaayp1xc.0"></div><div class="result-window" data-reactid=".7tbaayp1xc.1"></div></div></div>
+
+</div><p>This was particularly useful because <code>hero</code> was defined to return a <code>Character</code>,
+which is an interface; we might want to know what concrete type was actually
+returned. If we instead asked for the hero of episode V we would find that it
+was Luke, who is a <code>Human</code>.</p><div><div id="r112"><div class="miniGraphiQL" data-reactid=".1wrl42ws83k" data-react-checksum="-269533653"><div class="query-editor" data-reactid=".1wrl42ws83k.0"></div><div class="result-window" data-reactid=".1wrl42ws83k.1"></div></div></div>
+
+</div><p>As with the type system, this example just scratched the surface of the query
+language. The specification goes into more detail about this topic in the
+&quot;Language&quot; section, and the
+<a href="https://github.com/graphql/graphql-js/blob/master/src/language" target="_blank">language</a>
+directory in GraphQL.js contains code implementing a
+specification-compliant GraphQL query language parser and lexer.</p></div><div class="docs-prevnext"><a class="docs-next" href="/docs/validation">Next →</a></div></div></section><footer class="wrap"><div class="right">©2015 Facebook Inc.</div></footer></div><div id="fb-root"></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+            docsearch({
+              apiKey: 'd103541f3e6041148aade2e746ed4d61',
+              indexName: 'graphql',
+              inputSelector: '#algolia-doc-search'
+            });
+          </script><script src="//cdn.jsdelivr.net/react/0.13.3/react.js"></script><script src="index.html.a9a4604ef87b91e6770a.js"></script></body></html>

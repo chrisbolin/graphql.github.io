@@ -1,0 +1,133 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Utilties | GraphQL</title><meta name="viewport" content="width=device-width"><meta property="og:title" content="GraphQL | A data query language and runtime"><meta property="og:type" content="website"><meta property="og:url" content="http://graphql.org/"><meta property="og:description" content="A data query language and runtime"><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"><link rel="shortcut icon" href="/img/favicon.png"><link rel="stylesheet" href="/css/graphql.css"><script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script><script type="text/javascript">try{Typekit.load();}catch(e){}</script></head><body><div class="container"><div class="nav-main"><div class="wrap"><a class="nav-home" href="/"><img class="nav-logo" src="/img/logo.svg" width="40" height="40">GraphQL</a><div class="nav-site-wrapper"><ul class="nav-site nav-site-internal"><li><a href="/docs/getting-started/" class="active">Docs</a></li><li><a href="/blog/" class="">Blog</a></li><li><a href="/help/" class="">Help</a></li><li><a href="/code/" class="">Code</a></li></ul><div class="algolia-search-wrapper"><input id="algolia-doc-search" type="text" placeholder="Search docs..."></div><ul class="nav-site nav-site-external"><li><a href="http://facebook.github.io/graphql/" target="_blank" class="">Spec</a></li></ul></div></div></div><section class="content wrap documentationContent"><div class="nav-docs"><div class="nav-docs-section"><h3>Quick Start</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/getting-started/">Getting Started</a></li><li><a style="margin-left:0;" class="active" href="/docs/videos/">Videos</a></li></ul></div><div class="nav-docs-section"><h3>Walkthrough</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/intro/">Introduction</a></li><li><a style="margin-left:0;" class="active" href="/docs/typesystem/">Type System</a></li><li><a style="margin-left:0;" class="active" href="/docs/queries/">Queries</a></li><li><a style="margin-left:0;" class="active" href="/docs/validation/">Validation</a></li><li><a style="margin-left:0;" class="active" href="/docs/introspection/">Introspection</a></li></ul></div><div class="nav-docs-section"><h3>API Reference</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/api-reference-graphql/">GraphQL</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-language/">Language</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-type-system/">Type System</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-validation/">Validation</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-execution/">Execution</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-errors/">Errors</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-utilities/">Utilties</a></li></ul></div></div><div class="inner-content"><h1>Utilties</h1><div><p>The <code>graphql/utilites</code> module contains common useful computations to use with
+the GraphQL language and type objects.</p><pre class="prism language-javascript">
+<span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&#x27;graphql/utilities&#x27;</span><span class="token punctuation">;</span> <span spellcheck="true" class="token comment">// ES6</span>
+<span class="token keyword">var</span> GraphQLUtilities <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;graphql/utilities&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span spellcheck="true" class="token comment">// CommonJS</span></pre><h2><a class="anchor" name="overview"></a>Overview <a class="hash-link" href="#overview">#</a></h2><p><em>Introspection</em></p><div><ul class="apiIndex">
+  <li>
+    <a href="#introspectionquery">
+      <pre>var introspectionQuery</pre>
+      A GraphQL introspection query containing enough information to reproduce a type system.
+    </a>
+  </li>
+  <li>
+    <a href="#buildclientschema">
+      <pre>function buildClientSchema</pre>
+      Produces a client schema given the result of querying a schema with `introspectionQuery`.
+    </a>
+  </li>
+</ul>
+
+</div><p><em>Schema Language</em></p><div><ul class="apiIndex">
+  <li>
+    <a href="#printschema">
+      <pre>function printSchema</pre>
+      Prints the schema in a standard format.
+    </a>
+  </li>
+  <li>
+    <a href="#printintrospectionschema">
+      <pre>function printIntrospectionSchema</pre>
+      Prints the introspections featurs of the schema in a standard format.
+    </a>
+  </li>
+  <li>
+    <a href="#buildastschema">
+      <pre>function buildASTSchema</pre>
+      Builds a schema from a parsed AST Schema.
+    </a>
+  </li>
+  <li>
+    <a href="#typefromast">
+      <pre>function typeFromAST</pre>
+      Looks up a type referenced in an AST in the GraphQLSchema.
+    </a>
+  </li>
+  <li>
+    <a href="#astfromvalue">
+      <pre>function astFromValue</pre>
+      Produces a GraphQL Input Value AST given a JavaScript value.
+    </a>
+  </li>
+</ul>
+
+</div><p><em>Visitors</em></p><div><ul class="apiIndex">
+  <li>
+    <a href="#typeinfo">
+      <pre>class TypeInfo</pre>
+      Tracks type and field definitions during a visitor AST traversal..
+    </a>
+  </li>
+</ul>
+
+</div><p><em>Value Validation</em></p><div><ul class="apiIndex">
+  <li>
+    <a href="#isvalidjsvalue">
+      <pre>function isValidJSValue</pre>
+      Determins if a JavaScript value is valid for a GraphQL type.
+    </a>
+  </li>
+  <li>
+    <a href="#isvalidliteralvalue">
+      <pre>function isValidLiteralValue</pre>
+      Determins if a literal value from an AST is valid for a GraphQL type.
+    </a>
+  </li>
+</ul>
+
+</div><h2><a class="anchor" name="introspection"></a>Introspection <a class="hash-link" href="#introspection">#</a></h2><h3><a class="anchor" name="introspectionquery"></a>introspectionQuery <a class="hash-link" href="#introspectionquery">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">var</span> introspectionQuery<span class="token punctuation">:</span> string</pre><p>A GraphQL query that queries a server&#x27;s introspection system for enough
+information to reproduce that server&#x27;s type system.</p><h3><a class="anchor" name="buildclientschema"></a>buildClientSchema <a class="hash-link" href="#buildclientschema">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">buildClientSchema</span><span class="token punctuation">(</span>
+  introspection<span class="token punctuation">:</span> IntrospectionQuery
+<span class="token punctuation">)</span><span class="token punctuation">:</span> GraphQLSchema</pre><p>Build a GraphQLSchema for use by client tools.</p><p>Given the result of a client running the introspection query, creates and
+returns a GraphQLSchema instance which can be then used with all graphql-js
+tools, but cannot be used to execute a query, as introspection does not
+represent the &quot;resolver&quot;, &quot;parse&quot; or &quot;serialize&quot; functions or any other
+server-internal mechanisms.</p><h2><a class="anchor" name="schema-representation"></a>Schema Representation <a class="hash-link" href="#schema-representation">#</a></h2><h3><a class="anchor" name="printschema"></a>printSchema <a class="hash-link" href="#printschema">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">printSchema</span><span class="token punctuation">(</span>schema<span class="token punctuation">:</span> GraphQLSchema<span class="token punctuation">)</span><span class="token punctuation">:</span> string <span class="token punctuation">{</span></pre><p>Prints the provided schema in the Schema Language format.</p><h3><a class="anchor" name="printintrospectionschema"></a>printIntrospectionSchema <a class="hash-link" href="#printintrospectionschema">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">printIntrospectionSchema</span><span class="token punctuation">(</span>schema<span class="token punctuation">:</span> GraphQLSchema<span class="token punctuation">)</span><span class="token punctuation">:</span> string <span class="token punctuation">{</span></pre><p>Prints the built-in introspection schema in the Schema Language format.</p><h3><a class="anchor" name="buildastschema"></a>buildASTSchema <a class="hash-link" href="#buildastschema">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">buildASTSchema</span><span class="token punctuation">(</span>
+  ast<span class="token punctuation">:</span> SchemaDocument<span class="token punctuation">,</span>
+  queryTypeName<span class="token punctuation">:</span> string<span class="token punctuation">,</span>
+  mutationTypeName<span class="token punctuation">:</span> <span class="token operator">?</span>string
+<span class="token punctuation">)</span><span class="token punctuation">:</span> GraphQLSchema</pre><p>This takes the ast of a schema document produced by <code>parseSchemaIntoAST</code> in
+<code>graphql/language/schema</code> and constructs a GraphQLSchema instance which can be
+then used with all graphql-js tools, but cannot be used to execute a query, as
+introspection does not represent the &quot;resolver&quot;, &quot;parse&quot; or &quot;serialize&quot;
+functions or any other server-internal mechanisms.</p><h3><a class="anchor" name="typefromast"></a>typeFromAST <a class="hash-link" href="#typefromast">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">typeFromAST</span><span class="token punctuation">(</span>
+  schema<span class="token punctuation">:</span> GraphQLSchema<span class="token punctuation">,</span>
+  inputTypeAST<span class="token punctuation">:</span> Type
+<span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLType</pre><p>Given the name of a Type as it appears in a GraphQL AST and a Schema, return the
+corresponding GraphQLType from that schema.</p><h3><a class="anchor" name="astfromvalue"></a>astFromValue <a class="hash-link" href="#astfromvalue">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">astFromValue</span><span class="token punctuation">(</span>
+  value<span class="token punctuation">:</span> any<span class="token punctuation">,</span>
+  type<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLType
+<span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token operator">?</span>Value</pre><p>Produces a GraphQL Input Value AST given a JavaScript value.</p><p>Optionally, a GraphQL type may be provided, which will be used to
+disambiguate between value primitives.</p><h2><a class="anchor" name="visitors"></a>Visitors <a class="hash-link" href="#visitors">#</a></h2><h3><a class="anchor" name="typeinfo"></a>TypeInfo <a class="hash-link" href="#typeinfo">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">class</span> <span class="token class-name">TypeInfo</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span>schema<span class="token punctuation">:</span> GraphQLSchema<span class="token punctuation">)</span>
+  <span class="token function">getType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLOutputType <span class="token punctuation">{</span>
+  <span class="token function">getParentType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLCompositeType <span class="token punctuation">{</span>
+  <span class="token function">getInputType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLInputType <span class="token punctuation">{</span>
+  <span class="token function">getFieldDef</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLFieldDefinition <span class="token punctuation">{</span>
+  <span class="token function">getDirective</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLDirective <span class="token punctuation">{</span>
+  <span class="token function">getArgument</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token operator">?</span>GraphQLArgument <span class="token punctuation">{</span>
+<span class="token punctuation">}</span></pre><p>TypeInfo is a utility class which, given a GraphQL schema, can keep track
+of the current field and type definitions at any point in a GraphQL document
+AST during a recursive descent by calling <code>enter(node)</code> and <code>leave(node)</code>.</p><h2><a class="anchor" name="value-validation"></a>Value Validation <a class="hash-link" href="#value-validation">#</a></h2><h3><a class="anchor" name="isvalidjsvalue"></a>isValidJSValue <a class="hash-link" href="#isvalidjsvalue">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">isValidJSValue</span><span class="token punctuation">(</span>value<span class="token punctuation">:</span> any<span class="token punctuation">,</span> type<span class="token punctuation">:</span> GraphQLInputType<span class="token punctuation">)</span><span class="token punctuation">:</span> boolean</pre><p>Given a JavaScript value and a GraphQL type, determine if the value will be
+accepted for that type. This is primarily useful for validating the
+runtime values of query variables.</p><h3><a class="anchor" name="isvalidliteralvalue"></a>isValidLiteralValue <a class="hash-link" href="#isvalidliteralvalue">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">isValidLiteralValue</span><span class="token punctuation">(</span>
+  type<span class="token punctuation">:</span> GraphQLInputType<span class="token punctuation">,</span>
+  valueAST<span class="token punctuation">:</span> Value
+<span class="token punctuation">)</span><span class="token punctuation">:</span> boolean</pre><p>Utility for validators which determines if a value literal AST is valid given
+an input type.</p><p>Note that this only validates literal values, variables are assumed to
+provide values of the correct type.</p></div><div class="docs-prevnext"></div></div></section><footer class="wrap"><div class="right">©2015 Facebook Inc.</div></footer></div><div id="fb-root"></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+            docsearch({
+              apiKey: 'd103541f3e6041148aade2e746ed4d61',
+              indexName: 'graphql',
+              inputSelector: '#algolia-doc-search'
+            });
+          </script></body></html>

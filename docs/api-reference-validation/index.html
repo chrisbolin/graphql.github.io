@@ -1,0 +1,38 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Validation | GraphQL</title><meta name="viewport" content="width=device-width"><meta property="og:title" content="GraphQL | A data query language and runtime"><meta property="og:type" content="website"><meta property="og:url" content="http://graphql.org/"><meta property="og:description" content="A data query language and runtime"><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"><link rel="shortcut icon" href="/img/favicon.png"><link rel="stylesheet" href="/css/graphql.css"><script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script><script type="text/javascript">try{Typekit.load();}catch(e){}</script></head><body><div class="container"><div class="nav-main"><div class="wrap"><a class="nav-home" href="/"><img class="nav-logo" src="/img/logo.svg" width="40" height="40">GraphQL</a><div class="nav-site-wrapper"><ul class="nav-site nav-site-internal"><li><a href="/docs/getting-started/" class="active">Docs</a></li><li><a href="/blog/" class="">Blog</a></li><li><a href="/help/" class="">Help</a></li><li><a href="/code/" class="">Code</a></li></ul><div class="algolia-search-wrapper"><input id="algolia-doc-search" type="text" placeholder="Search docs..."></div><ul class="nav-site nav-site-external"><li><a href="http://facebook.github.io/graphql/" target="_blank" class="">Spec</a></li></ul></div></div></div><section class="content wrap documentationContent"><div class="nav-docs"><div class="nav-docs-section"><h3>Quick Start</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/getting-started/">Getting Started</a></li><li><a style="margin-left:0;" class="active" href="/docs/videos/">Videos</a></li></ul></div><div class="nav-docs-section"><h3>Walkthrough</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/intro/">Introduction</a></li><li><a style="margin-left:0;" class="active" href="/docs/typesystem/">Type System</a></li><li><a style="margin-left:0;" class="active" href="/docs/queries/">Queries</a></li><li><a style="margin-left:0;" class="active" href="/docs/validation/">Validation</a></li><li><a style="margin-left:0;" class="active" href="/docs/introspection/">Introspection</a></li></ul></div><div class="nav-docs-section"><h3>API Reference</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/api-reference-graphql/">GraphQL</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-language/">Language</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-type-system/">Type System</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-validation/">Validation</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-execution/">Execution</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-errors/">Errors</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-utilities/">Utilties</a></li></ul></div></div><div class="inner-content"><h1>Validation</h1><div><p>The <code>graphql/validation</code> module fulfills the Validation phase of fulfilling a
+GraphQL result.</p><pre class="prism language-javascript">
+<span class="token keyword">import</span> <span class="token punctuation">{</span> validate <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&#x27;graphql/validation&#x27;</span><span class="token punctuation">;</span> <span spellcheck="true" class="token comment">// ES6</span>
+<span class="token keyword">var</span> GraphQLValidator <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;graphql/validation&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span spellcheck="true" class="token comment">// CommonJS</span></pre><h2><a class="anchor" name="overview"></a>Overview <a class="hash-link" href="#overview">#</a></h2><div><ul class="apiIndex">
+  <li>
+    <a href="#validate">
+      <pre>function validate</pre>
+      Validates an AST against a provided Schema.
+    </a>
+  </li>
+  <li>
+    <a href="#specifiedrules">
+      <pre>var specifiedRules</pre>
+      A list of standard validation rules described in the GraphQL specification.
+    </a>
+  </li>
+</ul>
+
+</div><h2><a class="anchor" name="validation"></a>Validation <a class="hash-link" href="#validation">#</a></h2><h3><a class="anchor" name="validate"></a>validate <a class="hash-link" href="#validate">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">validate</span><span class="token punctuation">(</span>
+  schema<span class="token punctuation">:</span> GraphQLSchema<span class="token punctuation">,</span>
+  ast<span class="token punctuation">:</span> Document<span class="token punctuation">,</span>
+  rules<span class="token operator">?</span><span class="token punctuation">:</span> Array<span class="token operator">&lt;</span>any<span class="token operator">&gt;</span>
+<span class="token punctuation">)</span><span class="token punctuation">:</span> Array<span class="token operator">&lt;</span>GraphQLError<span class="token operator">&gt;</span></pre><p>Implements the &quot;Validation&quot; section of the spec.</p><p>Validation runs synchronously, returning an array of encountered errors, or
+an empty array if no errors were encountered and the document is valid.</p><p>A list of specific validation rules may be provided. If not provided, the
+default list of rules defined by the GraphQL specification will be used.</p><p>Each validation rules is a function which returns a visitor
+(see the language/visitor API). Visitor methods are expected to return
+GraphQLErrors, or Arrays of GraphQLErrors when invalid.</p><p>Visitors can also supply <code>visitSpreadFragments: true</code> which will alter the
+behavior of the visitor to skip over top level defined fragments, and instead
+visit those fragments at every point a spread is encountered.</p><h3><a class="anchor" name="specifiedrules"></a>specifiedRules <a class="hash-link" href="#specifiedrules">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">var</span> specifiedRules<span class="token punctuation">:</span> Array<span class="token operator">&lt;</span><span class="token punctuation">(</span>context<span class="token punctuation">:</span> ValidationContext<span class="token punctuation">)</span><span class="token punctuation">:</span> any<span class="token operator">&gt;</span></pre><p>This set includes all validation rules defined by the GraphQL spec</p></div><div class="docs-prevnext"><a class="docs-next" href="/docs/api-reference-execution">Next →</a></div></div></section><footer class="wrap"><div class="right">©2015 Facebook Inc.</div></footer></div><div id="fb-root"></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+            docsearch({
+              apiKey: 'd103541f3e6041148aade2e746ed4d61',
+              indexName: 'graphql',
+              inputSelector: '#algolia-doc-search'
+            });
+          </script></body></html>

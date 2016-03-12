@@ -1,0 +1,70 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Errors | GraphQL</title><meta name="viewport" content="width=device-width"><meta property="og:title" content="GraphQL | A data query language and runtime"><meta property="og:type" content="website"><meta property="og:url" content="http://graphql.org/"><meta property="og:description" content="A data query language and runtime"><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"><link rel="shortcut icon" href="/img/favicon.png"><link rel="stylesheet" href="/css/graphql.css"><script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script><script type="text/javascript">try{Typekit.load();}catch(e){}</script></head><body><div class="container"><div class="nav-main"><div class="wrap"><a class="nav-home" href="/"><img class="nav-logo" src="/img/logo.svg" width="40" height="40">GraphQL</a><div class="nav-site-wrapper"><ul class="nav-site nav-site-internal"><li><a href="/docs/getting-started/" class="active">Docs</a></li><li><a href="/blog/" class="">Blog</a></li><li><a href="/help/" class="">Help</a></li><li><a href="/code/" class="">Code</a></li></ul><div class="algolia-search-wrapper"><input id="algolia-doc-search" type="text" placeholder="Search docs..."></div><ul class="nav-site nav-site-external"><li><a href="http://facebook.github.io/graphql/" target="_blank" class="">Spec</a></li></ul></div></div></div><section class="content wrap documentationContent"><div class="nav-docs"><div class="nav-docs-section"><h3>Quick Start</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/getting-started/">Getting Started</a></li><li><a style="margin-left:0;" class="active" href="/docs/videos/">Videos</a></li></ul></div><div class="nav-docs-section"><h3>Walkthrough</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/intro/">Introduction</a></li><li><a style="margin-left:0;" class="active" href="/docs/typesystem/">Type System</a></li><li><a style="margin-left:0;" class="active" href="/docs/queries/">Queries</a></li><li><a style="margin-left:0;" class="active" href="/docs/validation/">Validation</a></li><li><a style="margin-left:0;" class="active" href="/docs/introspection/">Introspection</a></li></ul></div><div class="nav-docs-section"><h3>API Reference</h3><ul><li><a style="margin-left:0;" class="active" href="/docs/api-reference-graphql/">GraphQL</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-language/">Language</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-type-system/">Type System</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-validation/">Validation</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-execution/">Execution</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-errors/">Errors</a></li><li><a style="margin-left:0;" class="active" href="/docs/api-reference-utilities/">Utilties</a></li></ul></div></div><div class="inner-content"><h1>Errors</h1><div><p>The <code>graphql/error</code> module is responsible for creating and formating
+GraphQL errors.</p><pre class="prism language-javascript">
+<span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&#x27;graphql/error&#x27;</span><span class="token punctuation">;</span> <span spellcheck="true" class="token comment">// ES6</span>
+<span class="token keyword">var</span> GraphQLError <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;graphql/error&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span spellcheck="true" class="token comment">// CommonJS</span></pre><h2><a class="anchor" name="overview"></a>Overview <a class="hash-link" href="#overview">#</a></h2><div><ul class="apiIndex">
+  <li>
+    <a href="#graphqlerror">
+      <pre>class GraphQLError</pre>
+      A representation of an error that occurred within GraphQL.
+    </a>
+  </li>
+  <li>
+    <a href="#syntaxerror">
+      <pre>function syntaxError</pre>
+      Produces a GraphQLError representing a syntax error.
+    </a>
+  </li>
+  <li>
+    <a href="#locatedError">
+      <pre>function locatedError</pre>
+      Produces a new GraphQLError aware of the location responsible for the error.
+    </a>
+  </li>
+  <li>
+    <a href="#formaterror">
+      <pre>function formatError</pre>
+      Format an error according to the rules described by the Response Format.
+    </a>
+  </li>
+</ul>
+
+</div><h2><a class="anchor" name="errors"></a>Errors <a class="hash-link" href="#errors">#</a></h2><h3><a class="anchor" name="graphqlerror"></a>GraphQLError <a class="hash-link" href="#graphqlerror">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">class</span> <span class="token class-name">GraphQLError</span> <span class="token keyword">extends</span> <span class="token class-name">Error</span> <span class="token punctuation">{</span>
+ <span class="token function">constructor</span><span class="token punctuation">(</span>
+   message<span class="token punctuation">:</span> string<span class="token punctuation">,</span>
+   nodes<span class="token operator">?</span><span class="token punctuation">:</span> Array<span class="token operator">&lt;</span>any<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+   stack<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token operator">?</span>string<span class="token punctuation">,</span>
+   source<span class="token operator">?</span><span class="token punctuation">:</span> Source<span class="token punctuation">,</span>
+   positions<span class="token operator">?</span><span class="token punctuation">:</span> Array<span class="token operator">&lt;</span>number<span class="token operator">&gt;</span>
+ <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></pre><p>A representation of an error that occurred within GraphQL. Contains
+information about where in the query the error occurred for debugging. Most
+commonly constructed with <code>locatedError</code> below.</p><h3><a class="anchor" name="syntaxerror"></a>syntaxError <a class="hash-link" href="#syntaxerror">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">syntaxError</span><span class="token punctuation">(</span>
+  source<span class="token punctuation">:</span> Source<span class="token punctuation">,</span>
+  position<span class="token punctuation">:</span> number<span class="token punctuation">,</span>
+  description<span class="token punctuation">:</span> string
+<span class="token punctuation">)</span><span class="token punctuation">:</span> GraphQLError<span class="token punctuation">;</span></pre><p>Produces a GraphQLError representing a syntax error, containing useful
+descriptive information about the syntax error&#x27;s position in the source.</p><h3><a class="anchor" name="locatederror"></a>locatedError <a class="hash-link" href="#locatederror">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">locatedError</span><span class="token punctuation">(</span>error<span class="token punctuation">:</span> <span class="token operator">?</span>Error<span class="token punctuation">,</span> nodes<span class="token punctuation">:</span> Array<span class="token operator">&lt;</span>any<span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token punctuation">:</span> GraphQLError <span class="token punctuation">{</span></pre><p>Given an arbitrary Error, presumably thrown while attempting to execute a
+GraphQL operation, produce a new GraphQLError aware of the location in the
+document responsible for the original Error.</p><h3><a class="anchor" name="formaterror"></a>formatError <a class="hash-link" href="#formaterror">#</a></h3><pre class="prism language-javascript">
+<span class="token keyword">function</span> <span class="token function">formatError</span><span class="token punctuation">(</span>error<span class="token punctuation">:</span> GraphQLError<span class="token punctuation">)</span><span class="token punctuation">:</span> GraphQLFormattedError
+
+type GraphQLFormattedError <span class="token operator">=</span> <span class="token punctuation">{</span>
+  message<span class="token punctuation">:</span> string<span class="token punctuation">,</span>
+  locations<span class="token punctuation">:</span> <span class="token operator">?</span>Array<span class="token operator">&lt;</span>GraphQLErrorLocation<span class="token operator">&gt;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+type GraphQLErrorLocation <span class="token operator">=</span> <span class="token punctuation">{</span>
+  line<span class="token punctuation">:</span> number<span class="token punctuation">,</span>
+  column<span class="token punctuation">:</span> number
+<span class="token punctuation">}</span><span class="token punctuation">;</span></pre><p>Given a GraphQLError, format it according to the rules described by the
+Response Format, Errors section of the GraphQL Specification.</p></div><div class="docs-prevnext"><a class="docs-next" href="/docs/api-reference-utilities">Next →</a></div></div></section><footer class="wrap"><div class="right">©2015 Facebook Inc.</div></footer></div><div id="fb-root"></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+            docsearch({
+              apiKey: 'd103541f3e6041148aade2e746ed4d61',
+              indexName: 'graphql',
+              inputSelector: '#algolia-doc-search'
+            });
+          </script></body></html>
