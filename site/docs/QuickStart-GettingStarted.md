@@ -125,7 +125,6 @@ express()
 <script data-inline>
 var graphql = require('graphql');
 
-// Import our data set from above
 var data = {
   "1": {
     "id": "1",
@@ -141,7 +140,6 @@ var data = {
   }
 };
 
-// Define our user type, with two string fields; `id` and `name`
 var userType = new graphql.GraphQLObjectType({
   name: 'User',
   fields: {
@@ -150,8 +148,6 @@ var userType = new graphql.GraphQLObjectType({
   }
 });
 
-// Define our schema, with one top level field, named `user`, that
-// takes an `id` argument and returns the User with that ID.
 var schema = new graphql.GraphQLSchema({
   query: new graphql.GraphQLObjectType({
     name: 'Query',
