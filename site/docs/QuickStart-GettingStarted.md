@@ -6,33 +6,31 @@ permalink: /docs/getting-started/
 next: /docs/videos/
 ---
 
-Let's build a basic GraphQL server from scratch. We'll be using the **[graphql-js](https://github.com/graphql/graphql-js)** reference implementation of GraphQL for this example.
+Let's build a basic GraphQL server from scratch. We'll be using the **[graphql-js](https://github.com/graphql/graphql-js)** Javascript reference implementation of GraphQL for this example.
 
 Our server will be simple; it will have one type, a `User`, where a user has two fields; an `id` and a `name`. For an example of a more complex server and additional features,
 check out the **[walkthrough](../intro)** section of the docs.
 
 ## Setup
 
-We'll start by making a folder for our demo server.
+Start by making a folder for our demo server:
 
 ```sh
 mkdir graphql-demo
 cd graphql-demo
 ```
 
-Now, we'll install the three packages that we need:
+Our example server requires [Node.js](https://nodejs.org/en/). Additionally we need three packages for our server:
 
 1. **[graphql](https://github.com/graphql/graphql-js)**, the reference implementation of GraphQL in JS.
 2. **[express](https://github.com/strongloop/express)**, a basic web framework.
 3. **[express-graphql](https://github.com/graphql/express-graphql)**, middleware for express to make it easy to expose a GraphQL server.
 
-We install these three packages by running:
+Install these three packages using [npm](https://docs.npmjs.com/getting-started/installing-node):
 
 ```sh
 npm init -f
-npm install graphql --save
-npm install express --save
-npm install express-graphql --save
+npm install graphql express express-graphql --save
 ```
 
 ## Server
