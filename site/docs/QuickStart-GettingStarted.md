@@ -245,5 +245,5 @@ Most modern browsers will URL-encode for you, so you can try just loading
 http://localhost:3000/graphql?query={user(id:"1"){name}} (note that whitespace)
 is not important in GraphQL (similar to JSON).
 
-Congratulations! You've built your first GraphQL server. Try different queries;
-try changing the data; try adding different fields to the schema.
+Congratulations! You've built your first GraphQL server. Try different queries,
+changing the data, or even adding new fields to the schema.
