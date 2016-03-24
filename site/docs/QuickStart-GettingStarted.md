@@ -224,13 +224,10 @@ Let's start with the simple query
 }
 ```
 
-You must send this to your server via a GET request with a URL query string;
-the query itself must be URL-encoded. The above query URL-encoded is
-`%7Buser(id:%221%22)%7Bname%7D%7D`.
-(You can URL-encode any string in JavaScript with the global `encodeURI`
-function: `encodeURI(string)`.) Send this to your server by loading the page
-**http://localhost:3000/graphql?query=%7Buser(id:%221%22)%7Bname%7D%7D** - your
-server should respond with
+Remove all the whitespace in the query: `{user(id:"1"){name}}` (whitespace is optional in GraphQL).
+You can send this to your server via a GET request with a URL query string:
+**http://localhost:3000/graphql?query={user(id:"1"){name}}**
+- the server should respond with
 
 ```javascript
 {
@@ -242,9 +239,10 @@ server should respond with
 }
 ```
 
-(Many modern browsers will URL-encode automatically, so you can try just loading
-**http://localhost:3000/graphql?query={user(id:"1"){name}}** - note that whitespace
-is not important in GraphQL.)
+To be standards compliant, the query itself should be URL-encoded.
+If you received a GraphQL Syntax Error from the above query, try replacing it with
+the URL-encoded version: `%7Buser(id:%221%22)%7Bname%7D%7D`.
+(You can URL-encode any string in JavaScript with the global `encodeURI` function.)
 
 Congratulations! You've built your first GraphQL server. Try different queries,
-changing the data, or even adding new fields to the schema.
+or changing the data, or even adding new fields to the schema.
