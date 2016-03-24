@@ -224,8 +224,9 @@ Let's start with the simple query
 }
 ```
 
-You must send this to your server via a URL query string, so it must be
-URL-encoded. The above query URL-encoded is `%7Buser(id:%221%22)%7Bname%7D%7D`.
+You must send this to your server via a GET request with a URL query string;
+the query itself must be URL-encoded. The above query URL-encoded is
+`%7Buser(id:%221%22)%7Bname%7D%7D`.
 (You can URL-encode any string in JavaScript with the global `encodeURI`
 function: `encodeURI(string)`.) Send this to your server by loading the page
 http://localhost:3000/graphql?query=%7Buser(id:%221%22)%7Bname%7D%7D - your
